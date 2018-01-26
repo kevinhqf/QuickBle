@@ -21,10 +21,6 @@ public class BleRequestHandler {
     private BleService mService;
     public static final int STATE_CHARACTERISTIC_CHANGE = 123;
 
-    Ble.BleCallback mBleCallback;
-
-
-
     BleRequestHandler(BleService service) {
         mService = service;
     }
@@ -50,9 +46,6 @@ public class BleRequestHandler {
 
     /**
      * 进行读特性的请求
-     * 回调结果会以{@link BleService#BLE_CHARACTERISTIC_READ}为action的广播进行返回,
-     * <p>
-     * 广播参数可查看{@link BleService#bleCharacteristicRead(String, String, byte[], int)}
      *
      * @param bleDevice           对应的设备
      * @param service_uuid        相应服务的UUID
@@ -71,9 +64,6 @@ public class BleRequestHandler {
 
     /**
      * 进行写特性的请求
-     * 回调结果会以{@link BleService#BLE_CHARACTERISTIC_WRITE}为action的广播进行返回,
-     * <p>
-     * 广播参数可查看{@link BleService#bleCharacteristicWrite(String, String, byte[], int)}
      *
      * @param bleDevice           对应的设备
      * @param service_uuid        相应服务的UUID
@@ -94,11 +84,6 @@ public class BleRequestHandler {
 
     /**
      * 进行notify特性的请求
-     * 回调结果会以{@link BleService#BLE_CHARACTERISTIC_NOTIFY}
-     * 和{@link BleService#BLE_CHARACTERISTIC_CHANGE}为action的广播进行返回,
-     * <p>
-     * 广播参数可查看{@link BleService#bleCharacteristicNotify(String, String, int)}
-     * 和{@link BleService#bleCharacteristicChange(String, String, byte[], int)}
      *
      * @param bleDevice           对应的设备
      * @param service_uuid        相应服务的UUID

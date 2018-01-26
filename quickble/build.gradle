@@ -1,9 +1,16 @@
 apply plugin: 'com.android.library'
+//添加以下两个插件
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
+
+version="0.1.1"
 android {
     compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
-
+    //资源前缀
+    resourcePrefix "kevinhqf_"
 
     defaultConfig {
         minSdkVersion 18
@@ -21,11 +28,106 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //增加lint选项，不加的话下面上传到jCenter有可能会报错
+    lintOptions {
+        abortOnError false
+    }
+}
+buildscript {
+    repositories {
+        jcenter()
+    }
 
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.clj.fastble:FastBleLib:2.2.2'
     compile 'com.android.support:support-v4:26.1.0'
+}
+//你的library的地址
+def siteUrl = 'https://github.com/kevinhqf/QuickBle'
+def gitUrl = 'https://github.com/kevinhqf/QuickBle.git'
+def issueUrl = 'https://github.com/kevinhqf/QuickBle/issues'
+
+//这个蛮重要的，你上传到jCenter后一些文件存放的路径，如果不写或者写错了的话
+//可以不会产生pom文件，后面上传到jCenter后会报错，这个问题我搞了一下午！
+group = "kevinho.lib.dev"
+install {
+    repositories.mavenInstaller {
+        // POM.xml文件内容
+        pom {
+            project {
+                packaging 'aar'
+                // 添加描述，不重要
+                name 'android ble lib'
+                url siteUrl
+                // 协议
+                licenses {
+                    license {
+                        name 'The MIT License'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'kevinhqf' //your user ID
+                        name 'kevinhqf' //your name
+                        email 'kevin.ho.hqf@gmail.com' //your email
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+
+    //增加编码，这行很重要，如果是windows系统，同时如果在代码中有中文的话，不加这行，上传会报错
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    failOnError false
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        //发布到Bintray的哪个仓库
+        repo = "maven"
+        //发布到Bintray上的名字
+        name = "quickble"
+        //项目描述
+        desc = "android ble lib"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = issueUrl
+        licenses = ["MIT"]
+        //标签
+        labels = ['android']
+        publish = true
+        publicDownloadNumbers = true
+    }
 }
