@@ -1,16 +1,17 @@
 # QuickBle
-QuickBle is an android ble extension that makes BLE operations easy and quick. 
+QuickBle 是一个Android BLE的扩展库，可以对BLE进行快速便捷的操作。 
 
-QuickBle use Jasonchenlijian's [FastBle](https://github.com/Jasonchenlijian/FastBle) as the BLE operation lib. 
+QuickBle 使用了 Jasonchenlijian的[FastBle](https://github.com/Jasonchenlijian/FastBle) 作为BLE操作库. 
 
-With QuickBle, you can make several BLE requests in a time, 
-the QuickBle will enqueue every request to a queue and executed it sequentially.
-And the response will return in a BleCallback that you can do something with 
-the result.
+由于BLE操作是异步的，但每一次的操作请求都必须等待前一次的请求返回才能继续进行，这样导致了效率的下降。  
+
+通过使用QuickBle,可以同一时间对BLE外设发起不同的多个GATT读写请求,而不需要等待前一个请求返回后再进行下一个请求。 
+QuickBle 会将每一个请求放入到请求队列中，并且按顺序的从队列中取出请求进行处理。BLE操作响应的
+回调结果同样也会通过回调返回给调用者，调用者只需进行`BleCallback`的监听注册即可。
 
 
 # Usage
-1. First you need to add gradle dependency in your project:
+1. 首先将QuickBle依赖加入到你的`build.gradle`中：
 
 ```groovy
 dependencies {
@@ -19,7 +20,7 @@ dependencies {
 }
 ```
 
-2. Init the QuickBle instance with a Config object in your Application's onCreate() method:
+2. 在`Application`的`onCreate()`方法中对QuickBle进行初始化：
 ```java
 public class MyApplication extends Application {
     @Override
@@ -34,7 +35,7 @@ public class MyApplication extends Application {
 }
 ```
 
-3. Then you can do some BLE requests with `QuickBle.handler()` in your activity:
+3. 通过`QuickBle.handler()`进行BLE的操作:
 ```java
 // characteristic read operation 
 QuickBle.handler().requestCharacteristicRead(..);
@@ -45,9 +46,9 @@ QuickBle.handler().requestCharacteristicWrite(...);
 // characteristic notify operation 
 QuickBle.handler().requestCharacteristicNotification(...);
 ```
-method signature can see on the doc. 
 
-4. If you want to do something with the BLE response result you can register the `BleCallback`:
+
+4.注册`BleCallback`对BLE请求操作的回调数据进行处理:
 ```java
     BleCallback mBleCallback = new BleCallback() {...};
     
