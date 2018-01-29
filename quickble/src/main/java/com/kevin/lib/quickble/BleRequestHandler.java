@@ -6,8 +6,10 @@ import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleReadCallback;
+import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
+import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 
 /*
@@ -25,13 +27,23 @@ public class BleRequestHandler {
         mService = service;
     }
 
+    /**
+     * 进行Ble扫描 （不加入请求队列）
+     *
+     * @param callback 对BLE扫描的回调进行处理的callback
+     */
+    public void scan(BleScanCallback callback) {
+        if (BleScanState.STATE_SCANNING != BleManager.getInstance().getScanSate()) {
+            BleManager.getInstance().scan(callback);
+        }
+    }
 
     /**
-     * 进行连接请求 （不加入请求队列）
+     * 进行连接操作 （不加入请求队列）
      *
      * @param callback 对蓝牙连接的回调进行处理的callback
      */
-    public void requestConnect(BleDevice bleDevice, BleGattCallback callback) {
+    public void connect(BleDevice bleDevice, BleGattCallback callback) {
         if (!isConnected(bleDevice)) {
             BleManager.getInstance().connect(bleDevice, callback);
         }
@@ -194,7 +206,7 @@ public class BleRequestHandler {
 
 
     //TODO 返回exception
-    class BleRequestNotifyCallback extends BleNotifyCallback {
+    private class BleRequestNotifyCallback extends BleNotifyCallback {
 
 
         @Override
@@ -220,7 +232,7 @@ public class BleRequestHandler {
 
     }
 
-    class BleRequestWriteCallback extends BleWriteCallback {
+    private class BleRequestWriteCallback extends BleWriteCallback {
 
         @Override
         public void onWriteSuccess() {
@@ -237,7 +249,7 @@ public class BleRequestHandler {
         }
     }
 
-    class BleRequestReadCallback extends BleReadCallback {
+    private class BleRequestReadCallback extends BleReadCallback {
 
         @Override
         public void onReadSuccess(byte[] data) {

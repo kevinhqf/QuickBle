@@ -2,8 +2,8 @@ package com.kevin.lib.quickbledemo;
 
 import android.bluetooth.BluetoothGatt;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,14 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.kevin.lib.quickble.QuickBle;
-import com.kevin.lib.quickble.callback.BleReadCallback;
 
 import java.util.List;
 
@@ -57,36 +54,35 @@ public class ScanActivity extends AppCompatActivity implements DevicesAdapter.On
     }
 
     private void scan() {
-        if (BleManager.getInstance().getScanSate() != BleScanState.STATE_SCANNING) {
-            BleManager.getInstance().scan(new BleScanCallback() {
-                @Override
-                public void onScanStarted(boolean success) {
-                    pb.setVisibility(View.VISIBLE);
-                    mAdapter.clear();
-                }
 
-                @Override
-                public void onScanning(final BleDevice result) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addDevice(result);
-                        }
-                    });
-                }
+        QuickBle.handler().scan(new BleScanCallback() {
+            @Override
+            public void onScanStarted(boolean success) {
+                pb.setVisibility(View.VISIBLE);
+                mAdapter.clear();
+            }
 
-                @Override
-                public void onScanFinished(List<BleDevice> scanResultList) {
-                    pb.setVisibility(View.INVISIBLE);
-                }
-            });
-        }
+            @Override
+            public void onScanning(final BleDevice result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.addDevice(result);
+                    }
+                });
+            }
+
+            @Override
+            public void onScanFinished(List<BleDevice> scanResultList) {
+                pb.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
 
     @Override
     public void onDeviceClick(BleDevice bleDevice) {
-        QuickBle.handler().requestConnect(bleDevice, new BleGattCallback() {
+        QuickBle.handler().connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
                 Log.e(TAG, "onStartConnect: ----------------------");

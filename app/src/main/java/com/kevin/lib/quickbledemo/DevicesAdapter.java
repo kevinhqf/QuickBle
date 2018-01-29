@@ -13,9 +13,6 @@ import java.util.ArrayList;
 
 /**
  * @author HeQinfu
- * @copyright 康佳集团股份有限公司保留所有版权。
- * @created on 2018-1-26。
- * @description
  */
 
 public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.VH> {

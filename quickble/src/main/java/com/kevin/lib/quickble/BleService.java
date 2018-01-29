@@ -1,12 +1,5 @@
 package com.kevin.lib.quickble;
 
-import android.app.Service;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Binder;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.clj.fastble.utils.HexUtil;
@@ -29,8 +22,7 @@ import java.util.Queue;
  * 4. 等待蓝牙请求的回调，回调里通过{@link BleService}的 bleXXX()方法把回调的数据对外进行广播
  * 5. UI 接收广播数据并做相应的操作
  */
-public class BleService
-{
+public class BleService {
     private static final String TAG = "BleService";
     /**
      * 对Ble操作请求，注册了回调的列表
@@ -54,9 +46,9 @@ public class BleService
     /**
      * 检查请求超时的轮询线程
      */
-    private Thread mRequestTimeout;
+    private Thread mRequestTimeoutThread;
     private boolean mCheckTimeout = false;
-    private static final int REQUEST_TIMEOUT = 10 * 10;// total timeout = *100ms
+    private int mRequestTimeout = 10 * 10;// total timeout = *100ms
     /**
      * 当前正在处理的请求
      */
@@ -74,7 +66,7 @@ public class BleService
                     Thread.sleep(100);
                     elapsed++;
 
-                    if (elapsed > REQUEST_TIMEOUT && mCurrentRequest != null) {
+                    if (elapsed > mRequestTimeout && mCurrentRequest != null) {
                         bleRequestFailed(mCurrentRequest.type, BleRequest.FailReason.TIMEOUT);
                         bleStatusAbnormal("-processrequest type "
                                 + mCurrentRequest.type + " address "
@@ -112,7 +104,6 @@ public class BleService
     BleService() {
         mBleHandler = new BleRequestHandler(this);
     }
-
 
 
     /**
@@ -212,11 +203,11 @@ public class BleService
      * 清除超时轮询线程
      */
     private void clearTimeoutThread() {
-        if (mRequestTimeout.isAlive()) {
+        if (mRequestTimeoutThread.isAlive()) {
             try {
                 mCheckTimeout = false;
-                mRequestTimeout.join();
-                mRequestTimeout = null;
+                mRequestTimeoutThread.join();
+                mRequestTimeoutThread = null;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -228,8 +219,8 @@ public class BleService
      */
     private void startTimeoutThread() {
         mCheckTimeout = true;
-        mRequestTimeout = new Thread(mTimeoutRunnable);
-        mRequestTimeout.start();
+        mRequestTimeoutThread = new Thread(mTimeoutRunnable);
+        mRequestTimeoutThread.start();
     }
 
     /**
@@ -317,6 +308,10 @@ public class BleService
         mIsFilterDuplicate = filterDuplicate;
     }
 
+    public void setRequestTimeout(int millis) {
+        mRequestTimeout = millis / 100;
+    }
+
     void addBleCallback(BleCallback callback) {
         mBleCallbacks.add(callback);
     }
@@ -328,8 +323,6 @@ public class BleService
     BleRequestHandler handler() {
         return mBleHandler;
     }
-
-
 
 
 }

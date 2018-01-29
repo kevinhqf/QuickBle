@@ -4,7 +4,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 
-version="0.1.1"
+version="0.1.2"
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
@@ -64,8 +64,8 @@ install {
                 // 协议
                 licenses {
                     license {
-                        name 'The MIT License'
-                        url 'https://opensource.org/licenses/MIT'
+                        name 'Apache License 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0'
                     }
                 }
                 developers {
@@ -124,7 +124,7 @@ bintray {
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         issueTrackerUrl = issueUrl
-        licenses = ["MIT"]
+        licenses = ["Apache"]
         //标签
         labels = ['android']
         publish = true

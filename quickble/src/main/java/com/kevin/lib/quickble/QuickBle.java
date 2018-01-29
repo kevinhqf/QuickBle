@@ -24,6 +24,7 @@ public class QuickBle {
             return;
         this.mConfig = config;
         mService.setFilterDuplicate(config.isFilterDuplicate);
+        mService.setRequestTimeout(config.operateTimeOut);
         BleManager.getInstance().init(config.app);
         BleManager.getInstance()
                 .setMaxConnectCount(config.maxConnectCount)
@@ -46,7 +47,7 @@ public class QuickBle {
         singleton.mService.removeCallback(callback);
     }
 
-    public static QuickBle get() {
+    public static QuickBle instance() {
         return singleton;
     }
 
@@ -56,7 +57,7 @@ public class QuickBle {
 
 
     public static class Config {
-        private int operateTimeOut = 5000;
+        private int operateTimeOut = 10000;
         private int maxConnectCount = 7;
         private boolean isFilterDuplicate = false;
         private Application app;
