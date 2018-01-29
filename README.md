@@ -19,7 +19,16 @@ dependencies {
 }
 ```
 
-2. Init the QuickBle instance with a Config object in your Application's onCreate() method:
+2. Add the bluetooth permissions in your AndroidManifest file:
+ ```xml
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+
+3. Init the QuickBle instance with a Config object in your Application's onCreate() method:
 ```java
 public class MyApplication extends Application {
     @Override
@@ -34,7 +43,7 @@ public class MyApplication extends Application {
 }
 ```
 
-3. Then you can do some BLE requests with `QuickBle.handler()` in your activity:
+4. Then you can do some BLE requests with `QuickBle.handler()` in your activity:
 ```java
 // characteristic read operation 
 QuickBle.handler().requestCharacteristicRead(..);
@@ -47,7 +56,7 @@ QuickBle.handler().requestCharacteristicNotification(...);
 ```
 method signature can see on the doc. 
 
-4. If you want to do something with the BLE response result you can register the `BleCallback`:
+5. If you want to do something with the BLE response result you can register the `BleCallback`:
 ```java
     BleCallback mBleCallback = new BleCallback() {...};
     

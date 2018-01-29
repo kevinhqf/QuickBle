@@ -20,7 +20,16 @@ dependencies {
 }
 ```
 
-2. 在`Application`的`onCreate()`方法中对QuickBle进行初始化：
+2. 在AndroidManifest中添加蓝牙所需权限：
+```xml
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+
+3. 在`Application`的`onCreate()`方法中对QuickBle进行初始化：
 ```java
 public class MyApplication extends Application {
     @Override
@@ -35,7 +44,7 @@ public class MyApplication extends Application {
 }
 ```
 
-3. 通过`QuickBle.handler()`进行BLE的操作:
+4. 通过`QuickBle.handler()`进行BLE的操作:
 ```java
 // characteristic read operation 
 QuickBle.handler().requestCharacteristicRead(..);
@@ -48,7 +57,7 @@ QuickBle.handler().requestCharacteristicNotification(...);
 ```
 
 
-4.注册`BleCallback`对BLE请求操作的回调数据进行处理:
+5.注册`BleCallback`对BLE请求操作的回调数据进行处理:
 ```java
     BleCallback mBleCallback = new BleCallback() {...};
     
